@@ -7,12 +7,15 @@
 
 import Foundation
 
-func validate(password: String) -> Bool {
-    if password.count <= 7 {
-        return false
+class PasswordValidator {
+   static func validate(password: String) -> Bool {
+        if password.count <= 7 {
+            return false
+        }
+        let numString = password.components(
+            separatedBy: CharacterSet.decimalDigits.inverted).joined()
+        return numString.count >= 2
     }
-    let numString = password.components(
-        separatedBy: CharacterSet.decimalDigits.inverted).joined()
-    return numString.count >= 2
 }
+
 

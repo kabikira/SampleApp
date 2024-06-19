@@ -11,24 +11,38 @@ import XCTest
 class PasswordValidatorTests: XCTestCase {
     // 8文字以上であること
     func test数字が2文字含まれており_合計7文字入力された場合にfalseが返されること() {
-        XCTAssertFalse(validate(password: "abcde12"))
+        XCTAssertFalse(PasswordValidator.validate(password: "abcde12"))
     }
 
-    func test数字が2文字含まれており_合計8文字入力された場合にtrueが返されること() { XCTAssertTrue(validate(password: "abcdef12"))
+    func test数字が2文字含まれており_合計8文字入力された場合にtrueが返されること() { XCTAssertTrue(PasswordValidator.validate(password: "abcdef12"))
     }
 
-    func test数字が2文字含まれており_合計9文字入力された場合にtrueが返されること() { XCTAssertTrue(validate(password: "abcdefg12"))
+    func test数字が2文字含まれており_合計9文字入力された場合にtrueが返されること() { XCTAssertTrue(PasswordValidator.validate(password: "abcdefg12"))
     }
 
     // 数字が2文字以上利用されていること
     func test数字以外を7文字と_数字が1文字入力された場合にfalseが返されること() {
-        XCTAssertFalse(validate(password: "abcdefg1"))
+        XCTAssertFalse(PasswordValidator.validate(password: "abcdefg1"))
     }
 
-    func test数字以外を7文字と_数字が2文字入力された場合にtrueが返されること() { XCTAssertTrue(validate(password: "abcdefg12"))
+    func test数字以外を7文字と_数字が2文字入力された場合にtrueが返されること() { XCTAssertTrue(PasswordValidator.validate(password: "abcdefg12"))
     }
 
-    func test数字以外を7文字と_数字が3文字入力された場合にtrueが返されること() { XCTAssertTrue(validate(password: "abcdefg123"))
+    func test数字以外を7文字と_数字が3文字入力された場合にtrueが返されること() { XCTAssertTrue(PasswordValidator.validate(password: "abcdefg123"))
+    }
+}
+
+// XCTContext によって構造化したコード
+class PasswordValidatorTests2: XCTestCase {
+    func testパスワードバリデーションの文字数() {
+        XCTContext.runActivity(named: "数字が2文字以上含まれている場合") { _ in XCTContext.runActivity(named: "合計7文字が入力された場合") { _ in
+            XCTAssertFalse(PasswordValidator.validate(password: "abcde12"))
+            }
+            XCTContext.runActivity(named: "合計8文字が入力された場合") { _ in XCTAssertTrue(PasswordValidator.validate(password: "abcdef12"))
+            }
+            XCTContext.runActivity(named: "合計9文字が入力された場合") { _ in XCTAssertTrue(PasswordValidator.validate(password: "abcdefg12"))
+            }
+        }
     }
 }
 
