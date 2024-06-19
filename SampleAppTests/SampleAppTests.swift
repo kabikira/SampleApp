@@ -9,11 +9,26 @@ import XCTest
 @testable import SampleApp
 
 class PasswordValidatorTests: XCTestCase {
-        // 3"test"はじまりの命名
-        // 4日本語で名付けられたテストケース名。句読点は利用できないため、_で代用
+    // 8文字以上であること
     func test数字が2文字含まれており_合計7文字入力された場合にfalseが返されること() {
-        // 5"XCTAssert" の頭文字で始まるXCTestのアサーションメソッド
         XCTAssertFalse(validate(password: "abcde12"))
+    }
+
+    func test数字が2文字含まれており_合計8文字入力された場合にtrueが返されること() { XCTAssertTrue(validate(password: "abcdef12"))
+    }
+
+    func test数字が2文字含まれており_合計9文字入力された場合にtrueが返されること() { XCTAssertTrue(validate(password: "abcdefg12"))
+    }
+
+    // 数字が2文字以上利用されていること
+    func test数字以外を7文字と_数字が1文字入力された場合にfalseが返されること() {
+        XCTAssertFalse(validate(password: "abcdefg1"))
+    }
+
+    func test数字以外を7文字と_数字が2文字入力された場合にtrueが返されること() { XCTAssertTrue(validate(password: "abcdefg12"))
+    }
+
+    func test数字以外を7文字と_数字が3文字入力された場合にtrueが返されること() { XCTAssertTrue(validate(password: "abcdefg123"))
     }
 }
 
