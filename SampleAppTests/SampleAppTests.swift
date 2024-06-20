@@ -8,6 +8,31 @@
 import XCTest
 @testable import SampleApp
 
+// 独自のアサーションメソッド
+extension String {
+    func isOnlyNumeric() -> Bool {
+        // 文字列を.decimalDigitsのみでトリミングした場合に存在する文字の数が0個以下
+        return self.trimmingCharacters(in: .decimalDigits).count <= 0
+    }
+}
+
+func assertOnlyNumeric(string: String,
+                     file: StaticString = #file,
+                     line: UInt = #line) {
+    XCTAssertTrue(
+        string.isOnlyNumeric(),
+        "\"\(string)\" is not only numeric.",
+        file: file,
+        line: line)
+}
+
+class NumericStringTests: XCTestCase {
+    func testIsOnlyNumericString() {
+        let numericStr = "a0123456789"
+        assertOnlyNumeric(string: numericStr)
+    }
+}
+
 class PasswordValidatorTests: XCTestCase {
     // 8文字以上であること
     func test数字が2文字含まれており_合計7文字入力された場合にfalseが返されること() {
