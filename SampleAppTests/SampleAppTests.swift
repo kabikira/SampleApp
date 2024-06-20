@@ -8,6 +8,27 @@
 import XCTest
 @testable import SampleApp
 
+// アサーションのクロージャでエラーを受けるサンプル
+enum OperationError: Error {
+    case divisionByZero
+}
+
+func divide(_ x: Int, by y: Int) throws -> Int {
+    if y == 0 {
+        throw OperationError.divisionByZero
+    }
+
+    return x / y
+}
+
+class ExceptionTests: XCTestCase {
+    func testDivideWhenDivisionByZero() {
+        XCTAssertThrowsError(try divide(3, by: 0)) { error in
+            let error = error as? OperationError
+            XCTAssertEqual(error, OperationError.divisionByZero)
+        }
+    }
+}
 // 非同期処理のテスト
 class AsyncTests: XCTestCase {
     func testAsyncString() {
