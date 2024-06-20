@@ -18,4 +18,11 @@ class PasswordValidator {
     }
 }
 
+// 非同期のテスト
+func asyncString(completion: ((String) -> ())?) {
+    DispatchQueue.global().async {
+        sleep(3)
 
+        completion?("文字列A")
+    }
+}

@@ -8,6 +8,25 @@
 import XCTest
 @testable import SampleApp
 
+// 非同期処理のテスト
+class AsyncTests: XCTestCase {
+    func testAsyncString() {
+        // 非同期処理の待機と完了を表現するためのインスタンス
+        // descriptionは任意のもので構いません。
+        let exp = XCTestExpectation(description: "Async String")
+
+        // 非同期処理の関数の呼び出し
+        asyncString { string in
+            XCTAssertEqual(string, "文字列A")
+            exp.fulfill()
+        }
+        // 待機を行うXCTestExpectationのインスタンスを指定する。
+        // timeoutで指定した5秒以内にexpのfulfillが呼び出されない場合、
+        // このテストは失敗となる。
+        wait(for: [exp], timeout: 5.0)
+    }
+}
+
 // 独自のアサーションメソッド
 extension String {
     func isOnlyNumeric() -> Bool {
