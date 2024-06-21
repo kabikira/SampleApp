@@ -8,6 +8,123 @@
 import XCTest
 @testable import SampleApp
 
+// モックの例 電卓にロガーを仕込む例
+protocol LoggerProtocol {
+    func sendLog(message: String)
+}
+
+class MockLogger: LoggerProtocol {
+    var invokedSendLog = false
+    var invokedSendLogCount = 0
+    var sendLogProperties: [String] = []
+
+    func sendLog(message: String) {
+        invokedSendLog = true
+        invokedSendLogCount += 1
+        sendLogProperties.append(message)
+    }
+}
+
+class Calculator {
+    private let logger: LoggerProtocol
+
+    init(logger: LoggerProtocol) {
+        self.logger = logger
+    }
+
+    // 計算の実行を最後にまとめておこなうためのenum型
+    private enum CalcAction {
+        case add(Int)
+        // 引き算、割り算などの演算方法も追加されていくはず
+    }
+
+    private var calcActions: [CalcAction] = []
+
+    // 電卓において計算の実行は最後に行いたいので、calcActionsとして
+    // 行いたい計算方法を蓄積します
+    func add(num: Int) {
+        calcActions.append(.add(num))
+    }
+
+    func calc() -> Int {
+        logger.sendLog(message: "Start calc.")
+        var total = 0
+
+        // 蓄積されたcalcActionsをもとに、実際に計算を行なっていく処理
+        calcActions.forEach { calcAction in
+            switch calcAction {
+            case .add(let num):
+                logger.sendLog(message: "Add \(num).")
+                total += num
+            }
+        }
+        logger.sendLog(message: "Total is \(total).")
+        logger.sendLog(message: "Finish calc.")
+        return total
+    }
+}
+
+class CalculatorTests: XCTestCase {
+    func testAdd() {
+        let mockLogger = MockLogger()
+        let calculator = Calculator(logger: mockLogger)
+        let expectedSendMessages = [
+            "Start calc.", "Add 1.", "Total is 1.", "Finish calc."
+        ]
+
+        calculator.add(num: 1)
+        XCTAssertEqual(calculator.calc(), 1)
+
+        // 2
+        XCTAssertTrue(mockLogger.invokedSendLog)
+        XCTAssertEqual(mockLogger.invokedSendLogCount, 4)
+        XCTAssertEqual(mockLogger.sendLogProperties, expectedSendMessages)
+    }
+}
+
+
+// スタブの例
+// ログイン状態に応じてダイアログの表示・非表示を切り替える例
+// 1
+protocol AuthManagerProtocol {
+    var isLoggedIn: Bool { get }
+}
+
+// 2
+class StubAuthManager: AuthManagerProtocol {
+    var isLoggedIn: Bool = false
+}
+
+class DialogManager {
+    // 1, 2
+    private let authManager: AuthManagerProtocol
+
+    init(authManager: AuthManagerProtocol) {
+        self.authManager = authManager
+    }
+
+    var shouldShowLoginDialog: Bool {
+        return !authManager.isLoggedIn
+    }
+}
+
+class DialogManagerTests: XCTestCase {
+    func testShowLoginDialog_ログイン済み() {
+        let stubAuthManager = StubAuthManager()
+        stubAuthManager.isLoggedIn = true // 3
+        let dialogManager = DialogManager(authManager: stubAuthManager)
+        XCTAssertFalse(dialogManager.shouldShowLoginDialog)
+    }
+
+    func testShowLoginDialog_未ログイン() {
+        let stubAuthManager = StubAuthManager()
+        stubAuthManager.isLoggedIn = false // 3
+        let dialogManager = DialogManager(authManager: stubAuthManager)
+        XCTAssertTrue(dialogManager.shouldShowLoginDialog)
+    }
+}
+
+
 // アサーションのクロージャでエラーを受けるサンプル
 enum OperationError: Error {
     case divisionByZero
