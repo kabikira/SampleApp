@@ -6,8 +6,53 @@
 //
 
 import XCTest
+import Quick
+import Nimble
 @testable import SampleApp
 
+class PasswordValidatorSpec: QuickSpec {
+    override func spec() {
+        describe("パスワードバリデーションの文字数") {
+            context("数字が2文字以上含まれている場合") {
+                context("合計7文字が入力された場合") {
+                    it("should be invalid") {
+                        expect(PasswordValidator.validate(password: "abcde12")).to(beFalse())
+                    }
+                }
+
+                context("合計8文字が入力された場合") {
+                    it("should be valid") {
+                        expect(PasswordValidator.validate(password: "abcdef12")).to(beTrue())
+                    }
+                }
+
+                context("合計9文字が入力された場合") {
+                    it("should be valid") {
+                        expect(PasswordValidator.validate(password: "abcdefg12")).to(beTrue())
+                    }
+                }
+            }
+        }
+    }
+}
+// Quick を利用したテストコードの基本形
+class BasicSpec: QuickSpec {
+    override func spec() {
+        describe("String#isEmpty") {
+            context("when an empty stirng is given") {
+                it("returns true") {
+                    XCTAssertTrue("".isEmpty)
+                }
+            }
+
+            context("when string is blank") {
+                it("returns false") {
+                    XCTAssertFalse(" ".isEmpty)
+                }
+            }
+        }
+    }
+}
 // モックの例 電卓にロガーを仕込む例
 protocol LoggerProtocol {
     func sendLog(message: String)
