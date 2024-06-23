@@ -10,6 +10,21 @@ import Quick
 import Nimble
 @testable import SampleApp
 
+class PersonTests: XCTestCase {
+    func testWithXCTAssert() {
+        let teens = members.teens()
+
+//        XCTAssertEqual(teens.count, 2)
+//        XCTAssertTrue(teens.contains(members[1]))
+//        XCTAssertTrue(teens.contains(members[2]))
+
+        // Nimbleを利用したアサーション
+        expect(teens).to(haveCount(2))
+        expect(teens).to(haveCount(1))
+        expect(teens).to(contain(members[1], members[2]))
+    }
+}
+
 class PasswordValidatorSpec: QuickSpec {
     override func spec() {
         describe("パスワードバリデーションの文字数") {

@@ -26,3 +26,22 @@ func asyncString(completion: ((String) -> ())?) {
         completion?("文字列A")
     }
 }
+
+// Nimbleを使用するモチベーション
+struct Person: Equatable {
+    var name: String
+    var age: Int
+}
+
+extension Sequence where Element == Person {
+    func teens() -> [Person] {
+        return self.filter { (13..<19).contains($0.age) }
+    }
+}
+
+let members = [
+    Person(name: "山田", age: 12),
+    Person(name: "高橋", age: 13),
+    Person(name: "細沼", age: 19),
+    Person(name: "佐藤", age: 20),
+]
